@@ -110,5 +110,5 @@ if __name__ == '__main__':
     centroid = clusters.get_centroid()
     centroid = alphabet[np.argmax(centroid, axis=1)]
     centroid = [''.join(seq) for seq in centroid]
-    print(centroid)
+    print(f'{centroid=}')
     vis(data, labels, centroid, alphabet)
