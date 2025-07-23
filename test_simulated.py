@@ -16,6 +16,7 @@ from chainer_edit_distance import edit_distance
 from sklearn.manifold import TSNE
 import cupy
 from itertools import cycle, islice
+import time
 
 font = {'family': 'DejaVu Sans', 
         'weight': 'normal'}
@@ -128,6 +129,8 @@ if __name__ == '__main__':
     # print("data shape:", data.shape)
     # print(data[np.random.choice(len(data), 10)])
 
+    st = time.time()
+
     # clusters = SeqKmeans(num_clusters, centroid_length, alphabet)
     clusters = SoftSeqKmeans(num_clusters, centroid_length, alphabet)
     clusters.fit(data, n_iter=100)
@@ -140,6 +143,9 @@ if __name__ == '__main__':
     centroid = clusters.get_centroid()
     centroid = alphabet[np.argmax(centroid, axis=1)]
     centroid = [''.join(seq) for seq in centroid]
+
+    et = time.time()
+    print(f"Clustering time: {et - st:.2f} seconds")
 
     # print(f'{centroid=}')
     # vis(data, labels, centroid, alphabet)
