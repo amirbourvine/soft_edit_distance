@@ -99,8 +99,8 @@ if __name__ == '__main__':
     data = np.concatenate([generate_data(m, alphabet, seq_per_motif) for m in motifs], axis=0)
     print(data[np.random.choice(len(data), 10)])
 
-    clusters = SeqKmeans(3, 6, alphabet)
-    #clusters = SoftSeqKmeans(3, 6, alphabet)
+    # clusters = SeqKmeans(3, 6, alphabet)
+    clusters = SoftSeqKmeans(3, 6, alphabet)
     lcurve = clusters.fit(data, n_iter=100)
     pl.figure()
     pl.plot(lcurve)
