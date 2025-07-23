@@ -15,7 +15,7 @@ from sklearn.manifold import TSNE
 import cupy
 from itertools import cycle, islice
 
-font = {'family': 'DejaVu Sans',
+font = {'family': 'DejaVu Sans', 
         'weight': 'normal'}
 rc('font', **font)
 
