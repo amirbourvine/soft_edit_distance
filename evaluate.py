@@ -222,42 +222,42 @@ def evaluate_clustering(data, labels, centroids):
     # Core metrics
     wcss = calculate_wcss(data, labels, centroids)
     bcss = calculate_bcss(data, labels, centroids)
-    silhouette = calculate_silhouette_score(data, labels)
+    # silhouette = calculate_silhouette_score(data, labels)
     
     print("=== CORE METRICS ===")
     print(f"WCSS (Within-Cluster Sum of Squares): {wcss:.2f}")
     print(f"BCSS (Between-Cluster Sum of Squares): {bcss:.2f}")
     print(f"WCSS/n_samples (avg distance to centroid): {wcss/n_samples:.4f}")
-    print(f"Silhouette Score: {silhouette:.4f}")
+    # print(f"Silhouette Score: {silhouette:.4f}")
     
     # Cluster quality indices
     ch_score = calculate_calinski_harabasz_score(data, labels, centroids)
-    db_score = calculate_davies_bouldin_score(data, labels, centroids)
+    # db_score = calculate_davies_bouldin_score(data, labels, centroids)
     
     print(f"Calinski-Harabasz Score: {ch_score:.2f}")
-    print(f"Davies-Bouldin Score: {db_score:.4f}\n")
+    # print(f"Davies-Bouldin Score: {db_score:.4f}\n")
     
     # Distance analysis
-    intra_stats = calculate_intra_cluster_distances(data, labels)
-    inter_stats = calculate_inter_cluster_distances(centroids)
+    # intra_stats = calculate_intra_cluster_distances(data, labels)
+    # inter_stats = calculate_inter_cluster_distances(centroids)
     
-    print("=== DISTANCE ANALYSIS ===")
-    print("Intra-cluster distances (within clusters):")
-    print(f"  Mean: {intra_stats['overall_mean']:.4f}")
-    print(f"  Std:  {intra_stats['overall_std']:.4f}")
-    print(f"  Max:  {intra_stats['overall_max']}")
+    # print("=== DISTANCE ANALYSIS ===")
+    # print("Intra-cluster distances (within clusters):")
+    # print(f"  Mean: {intra_stats['overall_mean']:.4f}")
+    # print(f"  Std:  {intra_stats['overall_std']:.4f}")
+    # print(f"  Max:  {intra_stats['overall_max']}")
     
-    print("Inter-cluster distances (between centroids):")
-    print(f"  Mean: {inter_stats['mean']:.4f}")
-    print(f"  Std:  {inter_stats['std']:.4f}")
-    print(f"  Min:  {inter_stats['min']}")
-    print(f"  Max:  {inter_stats['max']}\n")
+    # print("Inter-cluster distances (between centroids):")
+    # print(f"  Mean: {inter_stats['mean']:.4f}")
+    # print(f"  Std:  {inter_stats['std']:.4f}")
+    # print(f"  Min:  {inter_stats['min']}")
+    # print(f"  Max:  {inter_stats['max']}\n")
     
-    # Separation ratio
-    if intra_stats['overall_mean'] > 0:
-        separation_ratio = inter_stats['mean'] / intra_stats['overall_mean']
-        print(f"Separation Ratio (inter/intra): {separation_ratio:.4f}")
-        print("  > 1.0 indicates well-separated clusters\n")
+    # # Separation ratio
+    # if intra_stats['overall_mean'] > 0:
+    #     separation_ratio = inter_stats['mean'] / intra_stats['overall_mean']
+    #     print(f"Separation Ratio (inter/intra): {separation_ratio:.4f}")
+    #     print("  > 1.0 indicates well-separated clusters\n")
     
     return {
         'wcss': wcss,
