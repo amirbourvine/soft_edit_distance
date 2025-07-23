@@ -77,7 +77,7 @@ def vis(X, labels, centroids, alphabet, subsample_size=1000):
                                          '#999999', '#e41a1c', '#dede00']),
                                   int(len(centroid) + 1))))
     colors = colors[labels]
-    print(labels)
+    # print(labels)
     indexes = np.random.choice(len(X), 200, replace=False)
     pl.figure()
     pl.scatter(points[indexes, 0], points[indexes, 1], c=colors[indexes], s=5, alpha=0.8)
@@ -97,6 +97,7 @@ if __name__ == '__main__':
     seq_per_motif = 3000
 
     data = np.concatenate([generate_data(m, alphabet, seq_per_motif) for m in motifs], axis=0)
+    print("data shape:", data.shape)
     print(data[np.random.choice(len(data), 10)])
 
     # clusters = SeqKmeans(3, 6, alphabet)

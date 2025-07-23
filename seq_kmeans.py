@@ -198,7 +198,7 @@ class SeqKmeans():
                     loss.backward()
                     lcurve.append(float(loss.data))
                     self.optimizer.update()
-                    print(i, j, np.mean(lcurve[-10:]))
+                    # print(i, j, np.mean(lcurve[-10:]))
 
         return np.array(lcurve)
 
@@ -207,7 +207,7 @@ class SeqKmeans():
         with chainer.using_config('train', False):
             with chainer.no_backprop_mode():
                 for i in range(0, len(X), batchsize):
-                    print(i)
+                    # print(i)
                     x = X[i: i + batchsize]
                     x = one_hot_encoding(x, self.dict_alphabet, self.max_length)
                     if self.use_gpu:
@@ -239,7 +239,7 @@ class SoftSeqKmeans():
         init = X[np.where(L == self.centroid_length)[0]]
         init = np.unique(init)
         init = init[np.random.choice(len(init), self.n_centroid, replace=False)]
-        print(init)
+        # print(init)
         init_seq = one_hot_encoding(init, self.dict_alphabet, self.max_length, init_smooth)
         init_seq[np.where(init_seq != 0)] = np.log(init_seq[np.where(init_seq != 0)])
         noise = np.random.gumbel(0, 1, init_seq.shape)
@@ -273,7 +273,7 @@ class SoftSeqKmeans():
                 loss.backward()
                 lcurve.append(float(loss.data))
                 self.optimizer.update()
-                print(i, np.mean(lcurve[-10:]))
+                # print(i, np.mean(lcurve[-10:]))
 
         return np.array(lcurve)
 
@@ -282,7 +282,7 @@ class SoftSeqKmeans():
         with chainer.using_config('train', False):
             with chainer.no_backprop_mode():
                 for i in range(0, len(X), batchsize):
-                    print(i)
+                    # print(i)
                     x = X[i: i + batchsize]
                     x = one_hot_encoding(x, self.dict_alphabet, self.max_length)
                     if self.use_gpu:
