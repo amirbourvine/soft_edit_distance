@@ -91,6 +91,29 @@ def vis(X, labels, centroids, alphabet, subsample_size=1000):
     pl.savefig('images/simulated.png', dpi=600)
     pl.show()
 
+
+def calculate_wcss(data, labels, centroids):
+    """
+    Calculate Within-Cluster Sum of Squares using edit distance.
+    
+    Args:
+        data: numpy array of sequences (strings)
+        labels: numpy array of cluster assignments for each data point
+        centroids: list of centroid sequences (strings)
+    
+    Returns:
+        float: total edit distance (WCSS)
+    """
+    total_distance = 0.0
+    
+    for i in range(len(data)):
+        cluster_id = labels[i]
+        distance = edit_distance(data[i], centroids[cluster_id])
+        total_distance += distance
+    
+    return total_distance
+
+
 if __name__ == '__main__':
     alphabet = np.array(['T', 'A', 'G', 'C'])
     test_type = 'real_small' # 'real_small' or 'real_big' 'simulated'
@@ -139,3 +162,6 @@ if __name__ == '__main__':
     centroid = [''.join(seq) for seq in centroid]
     print(f'{centroid=}')
     vis(data, labels, centroid, alphabet)
+
+    wcss = calculate_wcss(data, labels, centroid)
+    print(f'WCSS: {wcss}')
