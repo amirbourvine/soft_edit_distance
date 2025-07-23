@@ -69,7 +69,7 @@ def vis(X, labels, centroids, alphabet, subsample_size=1000):
     dist = edit_distance(encoded[I], encoded[J])
     dist = cupy.asnumpy(dist.reshape((len(encoded), len(encoded))))
 
-    tsne = TSNE(metric='precomputed', n_iter=10000, perplexity=100)
+    tsne = TSNE(metric='precomputed', max_iter=10000, perplexity=100)
     points = tsne.fit_transform(dist)
     labels = np.concatenate((labels, np.full(len(centroid), len(centroid), np.int32)), axis=0)
     colors = np.array(list(islice(cycle(['#377eb8', '#ff7f00', '#4daf4a',
