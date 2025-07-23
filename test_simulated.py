@@ -114,7 +114,7 @@ if __name__ == '__main__':
         # change data to np.array
         data = np.array(data)
 
-        num_clusters = 1000
+        num_clusters = 100
         centroid_length = 12
 
     if test_type == 'real_big':
