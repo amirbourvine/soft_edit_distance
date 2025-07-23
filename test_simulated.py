@@ -92,6 +92,31 @@ def vis(X, labels, centroids, alphabet, subsample_size=1000):
     pl.show()
 
 
+def edit_distance_strings(s1, s2):
+    """Calculate edit distance (Levenshtein distance) between two strings."""
+    m, n = len(s1), len(s2)
+    
+    # Create a DP table
+    dp = np.zeros((m + 1, n + 1), dtype=int)
+    
+    # Initialize base cases
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+    
+    # Fill the DP table
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if s1[i-1] == s2[j-1]:
+                dp[i][j] = dp[i-1][j-1]
+            else:
+                dp[i][j] = 1 + min(dp[i-1][j],    # deletion
+                                   dp[i][j-1],    # insertion
+                                   dp[i-1][j-1])  # substitution
+    
+    return dp[m][n]
+
 def calculate_wcss(data, labels, centroids):
     """
     Calculate Within-Cluster Sum of Squares using edit distance.
@@ -108,7 +133,7 @@ def calculate_wcss(data, labels, centroids):
     
     for i in range(len(data)):
         cluster_id = labels[i]
-        distance = edit_distance(data[i], centroids[cluster_id])
+        distance = edit_distance_strings(data[i], centroids[cluster_id])
         total_distance += distance
     
     return total_distance
@@ -164,4 +189,4 @@ if __name__ == '__main__':
     vis(data, labels, centroid, alphabet)
 
     wcss = calculate_wcss(data, labels, centroid)
-    print(f'WCSS: {wcss}')
+    print(f'{wcss=}')
