@@ -143,7 +143,7 @@ class SeqKmeans():
         out = [random.randint(0, len(X)-1)]
         for i in range(n_centroid - 1):
             min_d = np.min(d[:, out], axis=1)
-            new_point = np.random.choice(len(min_d), 1, p=min_d / np.sum(min_d))
+            new_point = np.random.choice(len(min_d), 1, p=min_d / np.sum(min_d))[0]
             out.append(new_point)
         return cupy.asnumpy(X)[out, :, :]
 
