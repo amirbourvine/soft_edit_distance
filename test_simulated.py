@@ -8,6 +8,13 @@ from sklearn.manifold import TSNE
 import cupy
 from itertools import cycle, islice
 
+import sys
+import types
+
+# Patch: avoid NumPy's broken import of a Windows-only module
+if 'distutils.msvccompiler' not in sys.modules:
+    sys.modules['distutils.msvccompiler'] = types.SimpleNamespace()
+
 font = {'family': 'Verdana',
         'weight': 'normal'}
 rc('font', **font)
