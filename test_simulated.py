@@ -1,9 +1,9 @@
 import sys
 import types
 
-# Patch: avoid NumPy's broken import of a Windows-only module
-if 'distutils.msvccompiler' not in sys.modules:
-    sys.modules['distutils.msvccompiler'] = types.SimpleNamespace()
+fake_module = types.ModuleType("distutils.msvccompiler")
+fake_module.get_build_version = lambda: None
+sys.modules["distutils.msvccompiler"] = fake_module
 
 import numpy as np
 import random
