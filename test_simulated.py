@@ -93,21 +93,47 @@ def vis(X, labels, centroids, alphabet, subsample_size=1000):
 
 if __name__ == '__main__':
     alphabet = np.array(['T', 'A', 'G', 'C'])
-    motifs = ['TAGCGA', 'ATGCAT', 'CCTTGA']
-    seq_per_motif = 3000
+    test_type = 'real_small' # 'real_small' or 'real_big' 'simulated'
 
-    data = np.concatenate([generate_data(m, alphabet, seq_per_motif) for m in motifs], axis=0)
+    if test_type == 'simulated':
+        motifs = ['TAGCGA', 'ATGCAT', 'CCTTGA']
+        seq_per_motif = 3000
+        data = np.concatenate([generate_data(m, alphabet, seq_per_motif) for m in motifs], axis=0)
+
+        num_clusters = 3
+        centroid_length = 6
+
+    if test_type == 'real_small':
+        # load data from indices_55000.txt file. each line is a sequence
+        with open('indices_55000.txt', 'r') as f:
+            data = [line.strip() for line in f.readlines()]
+        # change data to np.array
+        data = np.array(data)
+
+        num_clusters = 1000
+        centroid_length = 12
+
+    if test_type == 'real_big':
+        with open('indices_1481653.txt', 'r') as f:
+            data = [line.strip() for line in f.readlines()]
+        # change data to np.array
+        data = np.array(data)
+
+        num_clusters = 1000
+        centroid_length = 14
+
     print("data shape:", data.shape)
     print(data[np.random.choice(len(data), 10)])
 
-    # clusters = SeqKmeans(3, 6, alphabet)
-    clusters = SoftSeqKmeans(3, 6, alphabet)
+    # clusters = SeqKmeans(num_clusters, centroid_length, alphabet)
+    clusters = SoftSeqKmeans(num_clusters, centroid_length, alphabet)
     lcurve = clusters.fit(data, n_iter=100)
     pl.figure()
     pl.plot(lcurve)
 
     data = np.unique(data)
     labels = clusters.transform(data)
+
     centroid = clusters.get_centroid()
     centroid = alphabet[np.argmax(centroid, axis=1)]
     centroid = [''.join(seq) for seq in centroid]
