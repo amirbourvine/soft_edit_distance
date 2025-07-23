@@ -1,3 +1,10 @@
+import sys
+import types
+
+# Patch: avoid NumPy's broken import of a Windows-only module
+if 'distutils.msvccompiler' not in sys.modules:
+    sys.modules['distutils.msvccompiler'] = types.SimpleNamespace()
+
 import numpy as np
 import random
 from matplotlib import pyplot as pl
@@ -7,13 +14,6 @@ from chainer_edit_distance import edit_distance
 from sklearn.manifold import TSNE
 import cupy
 from itertools import cycle, islice
-
-import sys
-import types
-
-# Patch: avoid NumPy's broken import of a Windows-only module
-if 'distutils.msvccompiler' not in sys.modules:
-    sys.modules['distutils.msvccompiler'] = types.SimpleNamespace()
 
 font = {'family': 'Verdana',
         'weight': 'normal'}
