@@ -125,14 +125,14 @@ if __name__ == '__main__':
         num_clusters = 1000
         centroid_length = 14
 
-    print("data shape:", data.shape)
-    print(data[np.random.choice(len(data), 10)])
+    # print("data shape:", data.shape)
+    # print(data[np.random.choice(len(data), 10)])
 
-    clusters = SeqKmeans(num_clusters, centroid_length, alphabet)
-    # clusters = SoftSeqKmeans(num_clusters, centroid_length, alphabet)
-    lcurve = clusters.fit(data, n_iter=100)
-    pl.figure()
-    pl.plot(lcurve)
+    # clusters = SeqKmeans(num_clusters, centroid_length, alphabet)
+    clusters = SoftSeqKmeans(num_clusters, centroid_length, alphabet)
+    clusters.fit(data, n_iter=100)
+    # pl.figure()
+    # pl.plot(lcurve)
 
     data = np.unique(data)
     labels = clusters.transform(data)
@@ -140,7 +140,8 @@ if __name__ == '__main__':
     centroid = clusters.get_centroid()
     centroid = alphabet[np.argmax(centroid, axis=1)]
     centroid = [''.join(seq) for seq in centroid]
-    print(f'{centroid=}')
-    vis(data, labels, centroid, alphabet)
+
+    # print(f'{centroid=}')
+    # vis(data, labels, centroid, alphabet)
 
     metrics = evaluate_clustering(data, labels, centroid)
