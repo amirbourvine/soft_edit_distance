@@ -262,11 +262,11 @@ def evaluate_clustering(data, labels, centroids):
     return {
         'wcss': wcss,
         'bcss': bcss,
-        'silhouette': silhouette,
+        # 'silhouette': silhouette,
         'calinski_harabasz': ch_score,
-        'davies_bouldin': db_score,
-        'intra_cluster_stats': intra_stats,
-        'inter_cluster_stats': inter_stats,
+        # 'davies_bouldin': db_score,
+        # 'intra_cluster_stats': intra_stats,
+        # 'inter_cluster_stats': inter_stats,
         'n_clusters': n_clusters,
         'cluster_sizes': cluster_sizes
     }
