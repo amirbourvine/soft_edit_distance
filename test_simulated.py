@@ -173,8 +173,8 @@ if __name__ == '__main__':
     print("data shape:", data.shape)
     print(data[np.random.choice(len(data), 10)])
 
-    # clusters = SeqKmeans(num_clusters, centroid_length, alphabet)
-    clusters = SoftSeqKmeans(num_clusters, centroid_length, alphabet)
+    clusters = SeqKmeans(num_clusters, centroid_length, alphabet)
+    # clusters = SoftSeqKmeans(num_clusters, centroid_length, alphabet)
     lcurve = clusters.fit(data, n_iter=100)
     pl.figure()
     pl.plot(lcurve)
