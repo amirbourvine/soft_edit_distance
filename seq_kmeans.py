@@ -262,6 +262,7 @@ class SoftSeqKmeans():
 
         with chainer.using_config('train', True):
             lcurve = []
+            num_iters = 0
             for i in range(n_iter):
                 self.model.cleargrads()
                 indexes = np.random.choice(len(X), batchsize)
@@ -273,8 +274,10 @@ class SoftSeqKmeans():
                 loss.backward()
                 lcurve.append(float(loss.data))
                 self.optimizer.update()
+                num_iters = i
                 # print(i, np.mean(lcurve[-10:]))
-
+                
+            print(f"Number of iterations: {num_iters + 1}")
         return np.array(lcurve)
 
     def transform(self, X, batchsize=1000):
