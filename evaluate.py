@@ -51,7 +51,8 @@ def evaluate_clustering(data, labels, centroids):
     print(f"Max distance to centroids: {np.max(distances)}\n")
     print(f"Average distance to centroids: {np.mean(distances):.4f}\n")
 
-    # alcaulate an print min,max,avg distance between centroids
+
+    # calcaulate an print min,max,avg distance between centroids
     centroid_distances = []
     for i in range(len(centroids)):
         for j in range(i + 1, len(centroids)):
@@ -63,7 +64,7 @@ def evaluate_clustering(data, labels, centroids):
     print(f"Average distance between centroids: {np.mean(centroid_distances):.4f}\n")
 
     # take top x couples of closest centroids, and for each couple iterate through the clusters to find the closest strings, report the minimal distance amongst all top x couples
-    top_x = 1
+    top_x = 10
     closest_centroids = sorted(zip(centroid_distances, range(len(centroids))), key=lambda x: x[0])[:top_x]
     
     min_distance = float('inf')

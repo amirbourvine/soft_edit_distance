@@ -134,8 +134,6 @@ if __name__ == '__main__':
     # clusters = SeqKmeans(num_clusters, centroid_length, alphabet)
     clusters = SoftSeqKmeans(num_clusters, centroid_length, alphabet)
     clusters.fit(data, n_iter=100)
-    # pl.figure()
-    # pl.plot(lcurve)
 
     data = np.unique(data)
     labels = clusters.transform(data)
