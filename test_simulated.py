@@ -148,4 +148,4 @@ if __name__ == '__main__':
     # print(f'{centroid=}')
     # vis(data, labels, centroid, alphabet)
 
-    metrics = evaluate_clustering(data, labels, centroid)
+    evaluate_clustering(data, labels, centroid)
