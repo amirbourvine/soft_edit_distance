@@ -63,8 +63,8 @@ def evaluate_clustering(data, labels, centroids):
     print(f"Max distance between centroids: {np.max(centroid_distances)}\n")
     print(f"Average distance between centroids: {np.mean(centroid_distances):.4f}\n")
 
-    # add a histogram
-    plt.hist(centroid_distances, bins=20, alpha=0.7)
+    # add a histogram, but make bin for every distance value
+    plt.hist(centroid_distances, bins=range(0, max(centroid_distances) + 1), alpha=0.7)
     plt.title("Histogram of Distances Between Centroids")
     plt.xlabel("Distance")
     plt.ylabel("Frequency")
