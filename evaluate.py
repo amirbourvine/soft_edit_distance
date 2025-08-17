@@ -63,12 +63,19 @@ def evaluate_clustering(data, labels, centroids):
     print(f"Max distance between centroids: {np.max(centroid_distances)}\n")
     print(f"Average distance between centroids: {np.mean(centroid_distances):.4f}\n")
 
-    # add a histogram, but make bin for every distance value
-    plt.hist(centroid_distances, bins=range(0, max(centroid_distances) + 1), alpha=0.7)
-    plt.title("Histogram of Distances Between Centroids")
-    plt.xlabel("Distance")
-    plt.ylabel("Frequency")
-    plt.show()
+    # add a histogram, but make bin for every distance value, do not use plt, print to output
+    min_centroid_distance = np.min(centroid_distances)
+    max_centroid_distance = np.max(centroid_distances)
+    num_bins = max_centroid_distance - min_centroid_distance + 1
+    histogram = np.zeros(num_bins, dtype=int)
+
+    for dist in centroid_distances:
+        bin_index = dist - min_centroid_distance
+        histogram[bin_index] += 1
+
+    print("Histogram of centroid distances:")
+    for i in range(num_bins):
+        print(f"{min_centroid_distance + i}: {histogram[i]}")
 
     # take top x couples of closest centroids, and for each couple iterate through the clusters to find the closest strings, report the minimal distance amongst all top x couples
     top_x = 1
