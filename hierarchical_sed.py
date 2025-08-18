@@ -266,7 +266,7 @@ def test_hierarchical_softseqkmeans():
     hkmeans.save_clusters_to_file("1_4mil_sed_100_10.txt")
     
     # Evaluate clustering
-    evaluate_clustering(hkmeans.data, labels, centroids)
+    # evaluate_clustering(hkmeans.data, labels, centroids)
 
 
 if __name__ == '__main__':
