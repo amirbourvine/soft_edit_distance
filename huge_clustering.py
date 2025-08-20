@@ -1,3 +1,10 @@
+import sys
+import types
+
+fake_module = types.ModuleType("distutils.msvccompiler")
+fake_module.get_build_version = lambda: None
+sys.modules["distutils.msvccompiler"] = fake_module
+
 import numpy as np
 import time
 from typing import List, Tuple, Optional
