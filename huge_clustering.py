@@ -362,7 +362,7 @@ class HierarchicalClusterer:
             raise RuntimeError("Original data not available for saving.")
             
         with open(filename, 'w') as f:
-            print(f"Saving {len(self.final_clusters_num)} clusters to file: {filename}")
+            print(f"Saving {len(self.final_clusters)} clusters to file: {filename}")
             
             for i, cluster in enumerate(self.final_clusters):
                 # Write cluster header
