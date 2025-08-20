@@ -402,9 +402,13 @@ def example_usage():
     
     # Generate or load your large dataset here
     # For example, you could load from a file:
+    print("before loading data")
+
     with open('indices_1m.txt', 'r') as f:
         data = np.array([line.strip() for line in f.readlines()])
     
+    print("after loading data")
+
     # Initialize the hierarchical clusterer
     clusterer = HierarchicalClusterer(
         alphabet=alphabet,
@@ -414,7 +418,9 @@ def example_usage():
         centroid_length=14,       # Length of sequence centroids
         n_iter_per_clustering=100  # Iterations for each clustering step
     )
-    
+
+    print("after defining clusterer")
+
     # For actual use, load your 1B item dataset and run clustering:
     clusterer.fit(data, n_iterations=3)
     clusterer.save_clusters_to_file("huge_clusters_1m_indices.txt")
