@@ -405,7 +405,7 @@ def example_usage():
     # For example, you could load from a file:
     print("before loading data")
 
-    with open('indices_1m.txt', 'r') as f:
+    with open('125m_dna_strings.txt', 'r') as f:
         data = np.array([line.strip() for line in f.readlines()])
     
     print("after loading data")
