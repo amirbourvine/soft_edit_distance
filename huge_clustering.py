@@ -98,14 +98,18 @@ class HierarchicalClusterer:
         """
         # Create unique data to avoid duplicates during clustering
         unique_data = np.unique(mega_cluster_data)
-        
+
         # Create clusterer instance
         clusterer = SoftSeqKmeans(
             self.centroids_per_mega, 
             self.centroid_length, 
             self.alphabet
         )
-        
+
+        if unique_data.shape[0] < self.centroids_per_mega:
+            print(f"Not enough unique data points for clustering (found {unique_data.shape[0]}, needed {self.centroids_per_mega})")
+            exit(0)
+
         # Fit the clusterer
         clusterer.fit(unique_data, n_iter=self.n_iter_per_clustering)
         
