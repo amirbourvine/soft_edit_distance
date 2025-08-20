@@ -413,10 +413,10 @@ def example_usage():
     # Initialize the hierarchical clusterer
     clusterer = HierarchicalClusterer(
         alphabet=alphabet,
-        mega_cluster_size=10_000,  # Adjust based on your memory constraints
-        centroids_per_mega=100,   # Adjust based on your needs
-        final_clusters=100,       # Final number of clusters you want
-        centroid_length=14,       # Length of sequence centroids
+        mega_cluster_size=250_000,  # Adjust based on your memory constraints
+        centroids_per_mega=500,   # Adjust based on your needs
+        final_clusters=500,       # Final number of clusters you want
+        centroid_length=20,       # Length of sequence centroids
         n_iter_per_clustering=100  # Iterations for each clustering step
     )
 
@@ -424,7 +424,7 @@ def example_usage():
 
     # For actual use, load your 1B item dataset and run clustering:
     clusterer.fit(data, n_iterations=3)
-    clusterer.save_clusters_to_file("huge_clusters_1m_indices.txt")
+    clusterer.save_clusters_to_file("huge_clusters_125m_indices.txt")
     
 
 
