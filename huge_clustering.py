@@ -48,7 +48,7 @@ class HierarchicalClusterer:
         self.alphabet = alphabet
         self.mega_cluster_size = mega_cluster_size
         self.centroids_per_mega = centroids_per_mega
-        self.final_clusters = final_clusters
+        self.final_clusters_num = final_clusters
         self.centroid_length = centroid_length
         self.n_iter_per_clustering = n_iter_per_clustering
         
@@ -168,7 +168,7 @@ class HierarchicalClusterer:
         
         # Cluster the centroids
         centroid_clusterer = SoftSeqKmeans(
-            self.final_clusters,
+            self.final_clusters_num,
             self.centroid_length,
             self.alphabet
         )
@@ -184,7 +184,7 @@ class HierarchicalClusterer:
         final_centroids = np.array([''.join(self.alphabet[seq]) for seq in final_centroid_indices])
         
         # Organize assignments: which original centroids belong to which new clusters
-        assignments = [[] for _ in range(self.final_clusters)]
+        assignments = [[] for _ in range(self.final_clusters_num)]
         centroid_idx = 0
         
         for mega_idx, centroids in enumerate(all_centroids):
@@ -212,7 +212,7 @@ class HierarchicalClusterer:
         """
         print("Reorganizing data into new mega-clusters...")
         
-        new_mega_clusters = [[] for _ in range(self.final_clusters)]
+        new_mega_clusters = [[] for _ in range(self.final_clusters_num)]
         
         # For each new cluster, collect all data points that were assigned to its centroids
         for new_cluster_id, centroid_assignments in enumerate(assignments):
@@ -362,7 +362,7 @@ class HierarchicalClusterer:
             raise RuntimeError("Original data not available for saving.")
             
         with open(filename, 'w') as f:
-            print(f"Saving {len(self.final_clusters)} clusters to file: {filename}")
+            print(f"Saving {len(self.final_clusters_num)} clusters to file: {filename}")
             
             for i, cluster in enumerate(self.final_clusters):
                 # Write cluster header
