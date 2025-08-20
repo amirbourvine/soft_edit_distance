@@ -369,9 +369,6 @@ class HierarchicalClusterer:
             print(f"Saving {len(self.final_clusters)} clusters to file: {filename}")
             
             for i, cluster in enumerate(self.final_clusters):
-                # Write cluster header
-                f.write(f"=== Cluster {i+1} ===\n")
-                
                 # Write centroid
                 f.write(f"{cluster.centroid}\n")
                 f.write("*************\n")
