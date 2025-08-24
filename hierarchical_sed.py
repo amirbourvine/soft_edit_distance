@@ -250,7 +250,7 @@ def test_hierarchical_softseqkmeans():
             data = [line.strip() for line in f.readlines()]
         data = np.array(data)
         centroid_length = 14
-        hierarchy = [200, 10] 
+        hierarchy = [100, 10] 
 
     print(f"Original data shape: {data.shape}")
     print("Sample data:", data[np.random.choice(len(data), 5)])
@@ -272,7 +272,7 @@ def test_hierarchical_softseqkmeans():
     print("Sample centroids:", centroids[:5])
     
     # Save results
-    hkmeans.save_clusters_to_file("1_4mil_ed_200_10.txt")
+    hkmeans.save_clusters_to_file("1_4mil_ed_100_10.txt")
     
     # Evaluate clustering
     # evaluate_clustering(hkmeans.data, labels, centroids)
