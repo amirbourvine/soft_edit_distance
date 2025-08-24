@@ -228,7 +228,7 @@ class HierarchicalSoftSeqKmeans:
 def test_hierarchical_softseqkmeans():
     alphabet = np.array(['T', 'A', 'G', 'C'])
     test_type = 'real_big'  # 'real_small' or 'real_big' 'simulated'
-    metric = 'ed' # 'sed' or 'ed'
+    metric = 'sed' # 'sed' or 'ed'
 
     if test_type == 'simulated':
         motifs = ['TAGCGA', 'ATGCAT', 'CCTTGA']
