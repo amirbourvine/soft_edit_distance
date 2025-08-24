@@ -102,7 +102,7 @@ class SimpleCluster:
 
 
 class HierarchicalSoftSeqKmeans:
-    def __init__(self, hierarchy, centroid_length, alphabet, n_iter=100):
+    def __init__(self, hierarchy, centroid_length, alphabet, metric, n_iter=100):
         """
         hierarchy: list of k values for each level, e.g., [100, 20, 10, 5]
         centroid_length: length of centroids
@@ -118,6 +118,7 @@ class HierarchicalSoftSeqKmeans:
         self.n_iter = n_iter
         self.data = None
         self.final_clusters = []
+        self.metric = metric
         
     def fit(self, data):
         """Fit hierarchical clustering on data"""
@@ -154,7 +155,14 @@ class HierarchicalSoftSeqKmeans:
                 
                 # Run SoftSeqKmeans on this cluster
                 effective_k = min(k, len(cluster_data))
-                seq_kmeans = SoftSeqKmeans(effective_k, self.centroid_length, self.alphabet)
+
+                if self.metric == 'sed':
+                    seq_kmeans = SoftSeqKmeans(effective_k, self.centroid_length, self.alphabet)
+                elif self.metric == 'ed':
+                    seq_kmeans = SeqKmeans(effective_k, self.centroid_length, self.alphabet)
+                else:
+                    raise ValueError(f"Unknown metric: {self.metric}")
+
                 seq_kmeans.fit(cluster_data, n_iter=self.n_iter)
                 
                 # Get labels and centroids
@@ -220,6 +228,7 @@ class HierarchicalSoftSeqKmeans:
 def test_hierarchical_softseqkmeans():
     alphabet = np.array(['T', 'A', 'G', 'C'])
     test_type = 'real_big'  # 'real_small' or 'real_big' 'simulated'
+    metric = 'ed' # 'sed' or 'ed'
 
     if test_type == 'simulated':
         motifs = ['TAGCGA', 'ATGCAT', 'CCTTGA']
@@ -241,7 +250,7 @@ def test_hierarchical_softseqkmeans():
             data = [line.strip() for line in f.readlines()]
         data = np.array(data)
         centroid_length = 14
-        hierarchy = [200, 10] 
+        hierarchy = [1000] 
 
     print(f"Original data shape: {data.shape}")
     print("Sample data:", data[np.random.choice(len(data), 5)])
@@ -249,7 +258,7 @@ def test_hierarchical_softseqkmeans():
     st = time.time()
     
     # Create and fit hierarchical clustering
-    hkmeans = HierarchicalSoftSeqKmeans(hierarchy, centroid_length, alphabet, n_iter=100)
+    hkmeans = HierarchicalSoftSeqKmeans(hierarchy, centroid_length, alphabet, metric, n_iter=100)
     hkmeans.fit(data)
     
     et = time.time()
@@ -263,7 +272,7 @@ def test_hierarchical_softseqkmeans():
     print("Sample centroids:", centroids[:5])
     
     # Save results
-    hkmeans.save_clusters_to_file("1_4mil_sed_200_10.txt")
+    hkmeans.save_clusters_to_file("1_4mil_ed_1000.txt")
     
     # Evaluate clustering
     # evaluate_clustering(hkmeans.data, labels, centroids)
