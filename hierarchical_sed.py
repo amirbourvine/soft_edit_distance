@@ -227,7 +227,7 @@ class HierarchicalSoftSeqKmeans:
 
 def test_hierarchical_softseqkmeans():
     alphabet = np.array(['T', 'A', 'G', 'C'])
-    test_type = 'real_big'  # 'real_small' or 'real_big' 'simulated'
+    test_type = '5ed'  # 'real_small' or 'real_big' or 'simulated' or '5ed'
     metric = 'sed' # 'sed' or 'ed'
 
     if test_type == 'simulated':
@@ -252,6 +252,13 @@ def test_hierarchical_softseqkmeans():
         centroid_length = 14
         hierarchy = [1000] 
 
+    elif test_type == '5ed':
+        with open('indices_MinED-5.txt', 'r') as f:
+            data = [line.strip() for line in f.readlines()]
+        data = np.array(data)
+        centroid_length = 18
+        hierarchy = [500] 
+
     print(f"Original data shape: {data.shape}")
     print("Sample data:", data[np.random.choice(len(data), 5)])
     
@@ -272,7 +279,7 @@ def test_hierarchical_softseqkmeans():
     print("Sample centroids:", centroids[:5])
     
     # Save results
-    hkmeans.save_clusters_to_file("exps_results/indices_clusters_1_4_mil_sed.txt")
+    hkmeans.save_clusters_to_file("exps_results/indices_clusters_500_K_sed.txt")
     
     # Evaluate clustering
     # evaluate_clustering(hkmeans.data, labels, centroids)
