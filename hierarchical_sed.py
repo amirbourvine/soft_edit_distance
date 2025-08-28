@@ -272,7 +272,7 @@ def test_hierarchical_softseqkmeans():
     print("Sample centroids:", centroids[:5])
     
     # Save results
-    hkmeans.save_clusters_to_file("indices_clusters_1_4_mil_sed.txt")
+    hkmeans.save_clusters_to_file("exps_results/indices_clusters_1_4_mil_sed.txt")
     
     # Evaluate clustering
     # evaluate_clustering(hkmeans.data, labels, centroids)
