@@ -350,7 +350,7 @@ def example_usage():
     # For example, you could load from a file:
     print("before loading data")
 
-    data_filename = '125m_dna_strings.txt'
+    data_filename = '/home/user/AmirBourvine/DNA-online-pipeline/EditDistanceClustering/125m_dna_strings.txt'
 
     with open(data_filename, 'r') as f:
         data = np.array([line.strip() for line in f.readlines()])
