@@ -294,8 +294,8 @@ class HierarchicalClusterer:
         Returns:
             List of Cluster objects containing centroids and data indices
         """
-        print(f"Starting hierarchical clustering with {len(data)} items...")
-        print(f"Configuration: {n_iterations} iterations, {self.mega_cluster_size} items per mega-cluster")
+        print(f"Starting hierarchical clustering with {len(data)} items...", flush=True)
+        print(f"Configuration: {n_iterations} iterations, {self.mega_cluster_size} items per mega-cluster", flush=True)
         
         # Store original data for saving clusters later
         self.data = data.copy()
@@ -305,7 +305,7 @@ class HierarchicalClusterer:
         
         for iteration in range(n_iterations):
             if verbose:
-                print(f"\n=== Iteration {iteration + 1}/{n_iterations} ===")
+                print(f"\n=== Iteration {iteration + 1}/{n_iterations} ===", flush=True)
                 
             start_time = time.time()
             
@@ -331,7 +331,7 @@ class HierarchicalClusterer:
 
             iteration_time = time.time() - start_time
             if verbose:
-                print(f"Iteration {iteration + 1} completed in {iteration_time:.2f} seconds")
+                print(f"Iteration {iteration + 1} completed in {iteration_time:.2f} seconds", flush=True)
                 
             # Memory cleanup
             gc.collect()
@@ -348,14 +348,14 @@ def example_usage():
     
     # Generate or load your large dataset here
     # For example, you could load from a file:
-    print("before loading data")
+    print("before loading data", flush=True)
 
     data_filename = '/home/user/AmirBourvine/DNA-online-pipeline/EditDistanceClustering/125m_dna_strings.txt'
 
     with open(data_filename, 'r') as f:
         data = np.array([line.strip() for line in f.readlines()])
     
-    print("after loading data")
+    print("after loading data", flush=True)
 
     # Initialize the hierarchical clusterer
     clusterer = HierarchicalClusterer(
@@ -367,11 +367,12 @@ def example_usage():
         n_iter_per_clustering=100  # Iterations for each clustering step
     )
 
-    print("after defining clusterer")
+    print("after defining clusterer", flush=True)
 
     # For actual use, load your 1B item dataset and run clustering:
     clusterer.fit(data, n_iterations=5, verbose=True, iters_to_save_on=[3,5])
-    print("after fitting clusterer")
+    
+    print("after fitting clusterer", flush=True)
     
 
 
