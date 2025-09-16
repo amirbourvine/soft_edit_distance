@@ -68,7 +68,7 @@ class HierarchicalClusterer:
         Returns:
             List of mega-clusters (numpy arrays)
         """
-        print(f"Creating initial mega-clusters from {len(data)} items...")
+        print(f"Creating initial mega-clusters from {len(data)} items...", flush=True)
         
         # Shuffle data to ensure random distribution
         shuffled_indices = np.random.permutation(len(data))
@@ -83,7 +83,7 @@ class HierarchicalClusterer:
             mega_cluster = shuffled_data[start_idx:end_idx]
             mega_clusters.append(mega_cluster)
             
-        print(f"Created {len(mega_clusters)} mega-clusters")
+        print(f"Created {len(mega_clusters)} mega-clusters", flush=True)
         return mega_clusters
     
     def _cluster_mega_cluster(self, mega_cluster_data: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
@@ -133,7 +133,7 @@ class HierarchicalClusterer:
         Returns:
             Tuple of (list of centroid arrays, list of label arrays)
         """
-        print(f"Clustering {len(mega_clusters)} mega-clusters...")
+        print(f"Clustering {len(mega_clusters)} mega-clusters...", flush=True)
         
         all_centroids = []
         all_labels = []
@@ -161,11 +161,11 @@ class HierarchicalClusterer:
         Returns:
             Tuple of (final centroids, assignment of original centroids to new clusters as (mega_idx, local_centroid_idx) tuples)
         """
-        print("Clustering all centroids...")
+        print("Clustering all centroids...", flush=True)
         
         # Flatten all centroids
         flat_centroids = np.concatenate(all_centroids, axis=0)
-        print(f"  Total centroids to cluster: {len(flat_centroids)}")
+        print(f"  Total centroids to cluster: {len(flat_centroids)}", flush=True)
         
         # Remove duplicates
         unique_centroids = np.unique(flat_centroids)
@@ -216,7 +216,7 @@ class HierarchicalClusterer:
         Returns:
             New mega-clusters organized by centroid clustering
         """
-        print("Reorganizing data into new mega-clusters...")
+        print("Reorganizing data into new mega-clusters...", flush=True)
         
         new_mega_clusters = [[] for _ in range(self.final_clusters_num)]
         
@@ -236,7 +236,7 @@ class HierarchicalClusterer:
         # Convert to numpy arrays
         result_clusters = [np.array(cluster_data) for cluster_data in new_mega_clusters]
 
-        print(f"Created {len(result_clusters)} new mega-clusters")
+        print(f"Created {len(result_clusters)} new mega-clusters", flush=True)
         return result_clusters   
 
     def save_small_clusters_to_file(self, all_centroids: List[np.ndarray], all_labels: List[np.ndarray], iteration: int):
@@ -262,7 +262,7 @@ class HierarchicalClusterer:
 
                     f.write("\n")
         
-        print(f"saved small clusters to file {filename}")
+        print(f"saved small clusters to file {filename}", flush=True)
 
     def save_mega_clusters_to_file(self, final_centroids: np.ndarray, iteration: int):
         filename = file_name + str(iteration) + "_mega_clusters" + file_ext
@@ -280,7 +280,7 @@ class HierarchicalClusterer:
 
                 f.write("\n")
         
-        print(f"saved mega clusters to file {filename}")
+        print(f"saved mega clusters to file {filename}", flush=True)
 
     def fit(self, data: np.ndarray, n_iterations: int = 5, verbose: bool = True, iters_to_save_on: List[int] = None) -> List[Cluster]:
         """
