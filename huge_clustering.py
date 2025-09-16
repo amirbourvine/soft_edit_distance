@@ -11,7 +11,7 @@ from typing import List, Tuple, Optional
 import gc
 from seq_kmeans import SoftSeqKmeans  # Using SoftSeqKmeans as shown in the original code
 
-file_name = "huge_clusters_1k_sed_iterNum="
+file_name = "huge_clusters_125m_sed_iterNum="
 file_ext = ".txt"
 
 class Cluster:
@@ -261,6 +261,8 @@ class HierarchicalClusterer:
                         f.write(f"{item}\n")
 
                     f.write("\n")
+        
+        print(f"saved small clusters to file {filename}")
 
     def save_mega_clusters_to_file(self, final_centroids: np.ndarray, iteration: int):
         filename = file_name + str(iteration) + "_mega_clusters" + file_ext
@@ -277,6 +279,8 @@ class HierarchicalClusterer:
                     f.write(f"{item}\n")
 
                 f.write("\n")
+        
+        print(f"saved mega clusters to file {filename}")
 
     def fit(self, data: np.ndarray, n_iterations: int = 5, verbose: bool = True, iters_to_save_on: List[int] = None) -> List[Cluster]:
         """
@@ -346,7 +350,7 @@ def example_usage():
     # For example, you could load from a file:
     print("before loading data")
 
-    data_filename = 'indices_1000.txt' # '125m_dna_strings.txt'
+    data_filename = '125m_dna_strings.txt'
 
     with open(data_filename, 'r') as f:
         data = np.array([line.strip() for line in f.readlines()])
@@ -356,17 +360,17 @@ def example_usage():
     # Initialize the hierarchical clusterer
     clusterer = HierarchicalClusterer(
         alphabet=alphabet,
-        mega_cluster_size=10*10,  # Adjust based on your memory constraints
-        centroids_per_mega=10,   # Adjust based on your needs
-        final_clusters=10,       # Final number of clusters you want
-        centroid_length=14,       # Length of sequence centroids
+        mega_cluster_size=500*500,  # Adjust based on your memory constraints
+        centroids_per_mega=500,   # Adjust based on your needs
+        final_clusters=500,       # Final number of clusters you want
+        centroid_length=20,       # Length of sequence centroids
         n_iter_per_clustering=100  # Iterations for each clustering step
     )
 
     print("after defining clusterer")
 
     # For actual use, load your 1B item dataset and run clustering:
-    clusterer.fit(data, n_iterations=3, verbose=True, iters_to_save_on=[1, 3])
+    clusterer.fit(data, n_iterations=5, verbose=True, iters_to_save_on=[3,5])
     print("after fitting clusterer")
     
 
