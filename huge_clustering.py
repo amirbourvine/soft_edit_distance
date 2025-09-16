@@ -11,6 +11,8 @@ from typing import List, Tuple, Optional
 import gc
 from seq_kmeans import SoftSeqKmeans  # Using SoftSeqKmeans as shown in the original code
 
+file_name = "huge_clusters_1k_sed_iterNum="
+file_ext = ".txt"
 
 class Cluster:
     """Container for a single cluster with its centroid and data points."""
@@ -53,9 +55,7 @@ class HierarchicalClusterer:
         self.n_iter_per_clustering = n_iter_per_clustering
         
         # State variables
-        self.mega_clusters = []
-        self.current_centroids = None
-        self.final_clusters = []
+        self.current_mega_clusters = []
         self.data = None  # Store original data for saving clusters
         
     def _create_initial_mega_clusters(self, data: np.ndarray) -> List[np.ndarray]:
@@ -182,6 +182,8 @@ class HierarchicalClusterer:
         # Get labels for all original centroids
         centroid_labels = centroid_clusterer.transform(flat_centroids)
         
+        # centroid_labels[i] has the cluster index (inside final_centroids) for flat_centroids[i]
+
         # Get final centroids
         final_centroid_probs = centroid_clusterer.get_centroid()
         final_centroid_indices = np.argmax(final_centroid_probs, axis=1)
@@ -231,69 +233,52 @@ class HierarchicalClusterer:
                 
                 new_mega_clusters[new_cluster_id].extend(assigned_data)
         
-        # Convert to numpy arrays and filter empty clusters
-        result_clusters = []
-        for cluster_data in new_mega_clusters:
-            if len(cluster_data) > 0:
-                result_clusters.append(np.array(cluster_data))
-                
+        # Convert to numpy arrays
+        result_clusters = [np.array(cluster_data) for cluster_data in new_mega_clusters]
+
         print(f"Created {len(result_clusters)} new mega-clusters")
-        return result_clusters
-    
-    def _create_final_clusters(self, 
-                             mega_clusters: List[np.ndarray], 
-                             all_labels: List[np.ndarray], 
-                             final_centroids: np.ndarray,
-                             assignments: List[List[Tuple[int, int]]]) -> List[Cluster]:
-        """
-        Create final cluster objects with centroids and data indices.
-        
-        Args:
-            mega_clusters: Original mega-clusters
-            all_labels: Labels from clustering each mega-cluster
-            final_centroids: Final centroids from centroid clustering
-            assignments: Assignment of original centroids to new clusters
-            
-        Returns:
-            List of Cluster objects
-        """
-        print("Creating final cluster objects...")
-        
-        clusters = []
-        
-        for cluster_id in range(len(final_centroids)):
-            centroid = final_centroids[cluster_id]
-            data_indices = []
-            
-            # Get assignments for this cluster
-            centroid_assignments = assignments[cluster_id] if cluster_id < len(assignments) else []
-            
-            # Collect all data indices for this cluster
-            current_offset = 0
-            for mega_idx, mega_cluster in enumerate(mega_clusters):
-                mega_cluster_labels = all_labels[mega_idx]
-                
-                # Find which local centroids in this mega-cluster belong to current cluster
-                local_centroids_in_cluster = [local_idx for (m_idx, local_idx) in centroid_assignments if m_idx == mega_idx]
-                
-                for local_centroid_idx in local_centroids_in_cluster:
-                    # Find data points assigned to this local centroid
-                    mask = mega_cluster_labels == local_centroid_idx
-                    local_indices = np.where(mask)[0]
-                    
-                    # Convert to global indices
-                    global_indices = [current_offset + idx for idx in local_indices]
-                    data_indices.extend(global_indices)
-                
-                current_offset += len(mega_cluster)
-            
-            if len(data_indices) > 0:  # Only create cluster if it has data points
-                clusters.append(Cluster(centroid, data_indices))
-        
-        print(f"Created {len(clusters)} final clusters")
-        return clusters
-    
-    def fit(self, data: np.ndarray, n_iterations: int = 5, verbose: bool = True) -> List[Cluster]:
+        return result_clusters   
+
+    def save_small_clusters_to_file(self, all_centroids: List[np.ndarray], all_labels: List[np.ndarray], iteration: int):
+        filename = file_name + str(iteration) + "_small_clusters" + file_ext
+
+        # put clusters in file in the following structure:
+        # line with centroid, then line with *************, then all of the strings in the cluster, then an empty line, then a new cluster..
+        # the centroid of ith cluser is all_centroids[mega_cluster_index][centroid_index], and the strings are in current_mega_clusters[mega_cluster_index] that have label centroid_index
+        with open(filename, "w") as f:
+            for mega_cluster_index, centroids in enumerate(all_centroids):
+                for centroid_index, centroid in enumerate(centroids):
+                    f.write(f"{centroid}\n")
+                    f.write(f"{'*' * 13}\n")
+
+                    # for i in range(len(all_labels[mega_cluster_index])):
+                    #     if all_labels[mega_cluster_index][i] == centroid_index:
+                    #         f.write(f"{self.current_mega_clusters[mega_cluster_index][i]}\n")
+
+                    mask = all_labels[mega_cluster_index] == centroid_index
+                    assigned_data = self.current_mega_clusters[mega_cluster_index][mask]
+                    for item in assigned_data:
+                        f.write(f"{item}\n")
+
+                    f.write("\n")
+
+    def save_mega_clusters_to_file(self, final_centroids: np.ndarray, iteration: int):
+        filename = file_name + str(iteration) + "_mega_clusters" + file_ext
+
+        # put clusters in file in the following structure:
+        # line with centroid, then line with *************, then all of the strings in the cluster, then an empty line, then a new cluster..
+        # the centroid of ith cluser is final_centroids[i], and the strings are in current_mega_clusters[i]
+        with open(filename, "w") as f:
+            for cluster_index, centroid in enumerate(final_centroids):
+                f.write(f"{centroid}\n")
+                f.write(f"{'*' * 13}\n")
+
+                for item in self.current_mega_clusters[cluster_index]:
+                    f.write(f"{item}\n")
+
+                f.write("\n")
+
+    def fit(self, data: np.ndarray, n_iterations: int = 5, verbose: bool = True, iters_to_save_on: List[int] = None) -> List[Cluster]:
         """
         Fit the hierarchical clusterer and return final clusters.
         
@@ -312,7 +297,7 @@ class HierarchicalClusterer:
         self.data = data.copy()
         
         # Initialize with random mega-clusters
-        current_mega_clusters = self._create_initial_mega_clusters(data)
+        self.current_mega_clusters = self._create_initial_mega_clusters(data)
         
         for iteration in range(n_iterations):
             if verbose:
@@ -321,22 +306,25 @@ class HierarchicalClusterer:
             start_time = time.time()
             
             # Step 1: Cluster each mega-cluster
-            all_centroids, all_labels = self._cluster_all_mega_clusters(current_mega_clusters)
+            all_centroids, all_labels = self._cluster_all_mega_clusters(self.current_mega_clusters)
             
+            # all_centroids[i] has the centroids in the ith mega cluster
+            # all_labels[i][j] has the number of centroid (index in all_centroids[i]) to which the jth data point in the ith mega cluster belongs
+
+            if (iteration + 1) in (iters_to_save_on or []):
+                self.save_small_clusters_to_file(all_centroids, all_labels, iteration + 1)
+
             # Step 2: Cluster all centroids to reorganize
             final_centroids, assignments = self._cluster_centroids(all_centroids)
+
+            # final_centroids is the centroids in the clustering of the centroids
+            # assignments[i] holds the list of (mega_cluster_index, local_centroid_index) pairs assigned to the cluster of final_centroids[i]
+
+            self.current_mega_clusters = self._reorganize_data(self.current_mega_clusters, all_labels, assignments)
             
-            # Step 3: Handle final iteration differently
-            if iteration < n_iterations - 1:
-                # Reorganize data for next iteration
-                current_mega_clusters = self._reorganize_data(current_mega_clusters, all_labels, assignments)
-            else:
-                # On final iteration, create final cluster objects
-                self.current_centroids = final_centroids
-                self.final_clusters = self._create_final_clusters(
-                    current_mega_clusters, all_labels, final_centroids, assignments
-                )
-            
+            if (iteration + 1) in (iters_to_save_on or []):
+                self.save_mega_clusters_to_file(final_centroids, iteration + 1)
+
             iteration_time = time.time() - start_time
             if verbose:
                 print(f"Iteration {iteration + 1} completed in {iteration_time:.2f} seconds")
@@ -346,53 +334,6 @@ class HierarchicalClusterer:
         
         return
     
-    def get_centroids(self) -> np.ndarray:
-        """Get the final centroids."""
-        if self.current_centroids is None:
-            raise RuntimeError("Model not fitted yet. Call fit() first.")
-        return self.current_centroids
-    
-    def get_clusters(self) -> List[Cluster]:
-        """Get the final clusters."""
-        if not self.final_clusters:
-            raise RuntimeError("Model not fitted yet. Call fit() first.")
-        return self.final_clusters
-    
-    def save_clusters_to_file(self, filename: str):
-        """Save clusters to file"""
-        if not self.final_clusters:
-            raise RuntimeError("Model not fitted yet. Call fit() first.")
-        if self.data is None:
-            raise RuntimeError("Original data not available for saving.")
-            
-        with open(filename, 'w') as f:
-            print(f"Saving {len(self.final_clusters)} clusters to file: {filename}")
-            
-            for i, cluster in enumerate(self.final_clusters):
-                # Write centroid
-                f.write(f"{cluster.centroid}\n")
-                f.write("*************\n")
-                
-                # Write all data points in this cluster
-                for data_idx in cluster.data_indices:
-                    f.write(f"{self.data[data_idx]}\n")
-                f.write("\n")
-        
-        print(f"Clusters saved successfully to {filename}")
-    
-    def get_memory_usage_mb(self) -> float:
-        """Estimate current memory usage in MB."""
-        total_size = 0
-        
-        if self.mega_clusters:
-            for cluster in self.mega_clusters:
-                total_size += cluster.nbytes
-                
-        if self.current_centroids is not None:
-            total_size += self.current_centroids.nbytes
-            
-        return total_size / (1024 * 1024)
-
 
 def example_usage():
     """
@@ -405,7 +346,9 @@ def example_usage():
     # For example, you could load from a file:
     print("before loading data")
 
-    with open('125m_dna_strings.txt', 'r') as f:
+    data_filename = 'indices_1000.txt' # '125m_dna_strings.txt'
+
+    with open(data_filename, 'r') as f:
         data = np.array([line.strip() for line in f.readlines()])
     
     print("after loading data")
@@ -413,18 +356,18 @@ def example_usage():
     # Initialize the hierarchical clusterer
     clusterer = HierarchicalClusterer(
         alphabet=alphabet,
-        mega_cluster_size=250_000,  # Adjust based on your memory constraints
-        centroids_per_mega=500,   # Adjust based on your needs
-        final_clusters=500,       # Final number of clusters you want
-        centroid_length=20,       # Length of sequence centroids
+        mega_cluster_size=10*10,  # Adjust based on your memory constraints
+        centroids_per_mega=10,   # Adjust based on your needs
+        final_clusters=10,       # Final number of clusters you want
+        centroid_length=14,       # Length of sequence centroids
         n_iter_per_clustering=100  # Iterations for each clustering step
     )
 
     print("after defining clusterer")
 
     # For actual use, load your 1B item dataset and run clustering:
-    clusterer.fit(data, n_iterations=3)
-    clusterer.save_clusters_to_file("huge_clusters_125m_indices.txt")
+    clusterer.fit(data, n_iterations=5, verbose=True, iters_to_save_on=[3, 5])
+    print("after fitting clusterer")
     
 
 
