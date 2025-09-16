@@ -366,7 +366,7 @@ def example_usage():
     print("after defining clusterer")
 
     # For actual use, load your 1B item dataset and run clustering:
-    clusterer.fit(data, n_iterations=5, verbose=True, iters_to_save_on=[3, 5])
+    clusterer.fit(data, n_iterations=3, verbose=True, iters_to_save_on=[1, 3])
     print("after fitting clusterer")
     
 
