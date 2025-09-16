@@ -107,7 +107,7 @@ class HierarchicalClusterer:
         )
 
         if unique_data.shape[0] < self.centroids_per_mega:
-            print(f"Not enough unique data points for clustering (found {unique_data.shape[0]}, needed {self.centroids_per_mega})")
+            print(f"Not enough unique data points for clustering (found {unique_data.shape[0]}, needed {self.centroids_per_mega})", flush=True)
             exit(0)
 
         # Fit the clusterer
@@ -140,7 +140,7 @@ class HierarchicalClusterer:
         
         for i, mega_cluster in enumerate(mega_clusters):
             if i % 10 == 0:
-                print(f"  Processing mega-cluster {i+1}/{len(mega_clusters)}")
+                print(f"  Processing mega-cluster {i+1}/{len(mega_clusters)}", flush=True)
                 
             centroids, labels = self._cluster_mega_cluster(mega_cluster)
             all_centroids.append(centroids)
